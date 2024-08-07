@@ -1,0 +1,26 @@
+{
+    "name": "timesync-js",
+    "version": "1.0.0",
+    "description": "A Discord bot allowing people to register their timezone, and get others' timezone",
+    "main": "main.ts",
+    "scripts": {
+        "test": "echo \"Error: no test specified\" && exit 1",
+        "build": "tsc --outDir build",
+        "prestart": "npm run build --output-path=build",
+        "start": "node build/main.js"
+    },
+    "compilerOptions": {
+        "typeRoots": [
+            "src/@types",
+            "node_modules/@types"
+        ]
+    },
+    "author": "GaMeNu (@gamenu)",
+    "license": "GPL-3.0-only",
+    "dependencies": {
+        "mysql": "^2.18.1"
+    },
+    "devDependencies": {
+        "@types/mysql": "^2.15.26"
+    }
+}
