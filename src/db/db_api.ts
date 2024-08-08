@@ -1,11 +1,36 @@
-// It is theoretically possible to change this to the MariaDB connector, but it IS untested and may require debugging.
-import dblib from "mysql";
-const configdata = require("../../config.json");
+import { MysqlError, Pool, PoolConnection } from "mysql";
+import * as pm from "./pool_manager";
+import { time } from "discord.js";
 
-const DB_USER = configdata[""];
+function handleError(err: MysqlError){
+    throw err;
+}
 
-const connection = dblib.createConnection({
-    host: "localhost",
-    port: 3306
-    // TODO: add connection
-})
+async function queryDatabase(query: string, params: any){
+
+    return new Promise((resolve, reject) => {
+        pm.getConnection((err: MysqlError, conn: PoolConnection) => {
+        if (err) {
+            return reject(err);
+        }
+
+        conn.query(query, params, (queryErr, results) => {
+                conn.release();
+
+                if (queryErr) {
+                    return reject(queryErr);
+                }
+
+                resolve(results);
+            });
+        });
+    })
+}
+
+async function addUser(discord_id: number, timezone: string){
+    try {
+        await queryDatabase("REPLACE INTO timezones (discord_id, timezone) VALUES (%s, %s)", [discord_id, timezone]);
+    } catch (error) {
+        console.error(error);
+    }
+}

@@ -6,7 +6,7 @@ const configdata = require("../config.json");
 
 dotenv.config(); // ENV VARS
 
-const client = new discord.Client({intents: [discord.GatewayIntentBits.Guilds, discord.GatewayIntentBits.GuildMessages, discord.GatewayIntentBits.MessageContent]});
+const client = new discord.Client({intents: [discord.GatewayIntentBits.Guilds, discord.GatewayIntentBits.GuildMessages, discord.GatewayIntentBits.MessageContent, discord.GatewayIntentBits.GuildIntegrations]});
 
 const TOKEN: string = configdata["token"];
 
