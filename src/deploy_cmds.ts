@@ -68,7 +68,7 @@ function prepare_commands(client: discord.Client){
             if ('data' in command && 'execute' in command){
                 client.commands.set(command.data.name, command);
                 commands.push(command.data.toJSON());
-                console.log(command.data.name)
+                console.log("/" + command.data.name)
             } else {
                 console.log(`[WARNING] Command missing required property "data" or "exclude"at ${filePath}`);
             }

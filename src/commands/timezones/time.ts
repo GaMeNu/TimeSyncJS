@@ -25,6 +25,8 @@ let cmd = new SlashCommandBuilder()
 async function exc_time_set(interaction: discord.ChatInputCommandInteraction) {
     let tz = interaction.options.getString("timezone")
     interaction.reply(`/time set ${tz}`);
+
+    let user = interaction.options.getUser("user");
 }
 
 
@@ -32,7 +34,7 @@ async function execute(interaction: discord.ChatInputCommandInteraction){
     let subcommand = interaction.options.getSubcommand();
     let func: Function;
     switch (subcommand){
-        case "set": 
+        case "set":
             func = exc_time_set;
             break;
         
@@ -44,6 +46,7 @@ async function execute(interaction: discord.ChatInputCommandInteraction){
     }
 
     await func(interaction);
+
 }
 
 module.exports = {
