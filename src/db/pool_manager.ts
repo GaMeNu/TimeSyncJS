@@ -15,8 +15,8 @@ export const pool = dblib.createPool({
     database: DATABASE
 })
 
-export var getConnection = function(callback: Function) {
-    pool.getConnection(function(err, connection) {
+export var getConnection = function(callback: (err: dblib.MysqlError, connection: dblib.PoolConnection) => void) {
+    pool.getConnection(function(err: dblib.MysqlError, connection: dblib.PoolConnection) {
         callback(err, connection);
     });
 };

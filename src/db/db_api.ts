@@ -1,36 +1,46 @@
 import { MysqlError, Pool, PoolConnection } from "mysql";
 import * as pm from "./pool_manager";
 import { time } from "discord.js";
+import discord from "discord.js";
 
-function handleError(err: MysqlError){
-    throw err;
-}
+module DBAPI {
 
-async function queryDatabase(query: string, params: any){
+    function handleError(err: MysqlError){
+        throw err;
+    }
 
-    return new Promise((resolve, reject) => {
-        pm.getConnection((err: MysqlError, conn: PoolConnection) => {
-        if (err) {
-            return reject(err);
-        }
+    async function queryDatabase(query: string, params: any[]): Promise<any>{
 
-        conn.query(query, params, (queryErr, results) => {
-                conn.release();
+        return new Promise((resolve, reject) => {
+            pm.getConnection((err: MysqlError, conn: PoolConnection) => {
+            if (err) {
+                return reject(err);
+            }
 
-                if (queryErr) {
-                    return reject(queryErr);
-                }
+            conn.query(query, params, (queryErr, results) => {
+                    conn.commit();
 
-                resolve(results);
+                    conn.release();
+
+                    if (queryErr) {
+                        return reject(queryErr);
+                    }
+
+                    resolve(results);
+                });
             });
-        });
-    })
-}
 
-async function addUser(discord_id: number, timezone: string){
-    try {
-        await queryDatabase("REPLACE INTO timezones (discord_id, timezone) VALUES (%s, %s)", [discord_id, timezone]);
-    } catch (error) {
-        console.error(error);
+        })
+    }
+
+    export async function addUser(discord_id: number, timezone: string) {
+        try {
+            await queryDatabase("REPLACE INTO timezones (discord_id, timezone) VALUES (?, ?);", [discord_id, timezone]);
+        } catch (error) {
+            // Catch-n-throw! Everyone's favorite game!
+            throw error;
+        }
     }
 }
+
+export {DBAPI as default};

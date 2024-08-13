@@ -1,50 +1,49 @@
-import discord from "discord.js";
-import { CommandInteraction, SlashCommandBuilder, SlashCommandSubcommandBuilder } from "discord.js";
+import discord, { SlashCommandSubcommandBuilder } from "discord.js";
+import { SlashCommandBuilder } from "discord.js";
+import fs from "node:fs";
+import path from "node:path";
 
-let time_set = function (subcommand: SlashCommandSubcommandBuilder){
-    return subcommand
-        .setName("set")
-        .setDescription("Set your timezone")
-        .addStringOption(option => 
-            option
-            .setName("timezone")
-            .setDescription("Your timezone of choice")
-            .setRequired(true)
-        ).addUserOption(option => 
-            option
-            .setName("user")
-            .setDescription("A user to set timezone of (requires permissions)")
-        );
-}
+import DBAPI from "../../db/db_api";
+
+
 
 let cmd = new SlashCommandBuilder()
-    .setName("time")
-    .setDescription("Timezone management command")
-    .addSubcommand(time_set);
+.setName("time")
+.setDescription("Timezone management command");
 
-async function exc_time_set(interaction: discord.ChatInputCommandInteraction) {
-    let tz = interaction.options.getString("timezone")
-    interaction.reply(`/time set ${tz}`);
+// Command dispatcher ("_" is default value)
+const subcFuncs: { [key: string]: ((interaction: discord.ChatInputCommandInteraction) => Promise<void>) } = {
+    "_": async function(interaction: discord.ChatInputCommandInteraction){
+        await interaction.reply("Unrecognized subcommand (how did we get here?)")
+    }
+}
 
-    let user = interaction.options.getUser("user");
+// Get subcommands dir
+const timePath = path.join(__dirname, "time")
+const timeDir = fs.readdirSync(timePath);
+
+// Iterate over and add each command to the dispatcher
+for (const subcName of timeDir){
+    const subcPath = path.join(timePath, subcName);
+    const subc = require(subcPath);
+
+    if ('data' in subc && 'execute' in subc){
+        let data: SlashCommandSubcommandBuilder = subc.data;
+        cmd.addSubcommand(subc.data);
+        subcFuncs[data.name] = subc.execute;
+    } else {
+        console.log(`[WARNING] Missing 'data' or 'execute' properties in subcommand file ${subcName}`)
+    }
 }
 
 
 async function execute(interaction: discord.ChatInputCommandInteraction){
     let subcommand = interaction.options.getSubcommand();
-    let func: Function;
-    switch (subcommand){
-        case "set":
-            func = exc_time_set;
-            break;
-        
-        default:
-            func = async function(interaction: discord.ChatInputCommandInteraction){
-                await interaction.reply("Unrecognized subcommand (how did we get here?)")
-            }
-            break;
-    }
+    let func;
 
+    if (!(subcommand in subcFuncs)) func = subcFuncs["_"];
+    else func = subcFuncs[subcommand];
+    
     await func(interaction);
 
 }

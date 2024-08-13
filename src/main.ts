@@ -1,6 +1,7 @@
 import dotenv from "dotenv";
 import discord from "discord.js";
 import { deploy_cmds, set_client_commands } from "./deploy_cmds";
+import { IANATimeZones } from "./util/timezones";
 const configdata = require("../config.json");
 
 
@@ -70,7 +71,5 @@ client.on(discord.Events.MessageCreate, async (message) => {
         } 
     }
 })
-
-
 client.login(TOKEN);
 

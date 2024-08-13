@@ -18,6 +18,7 @@
     "author": "GaMeNu (@gamenu)",
     "license": "GPL-3.0-only",
     "dependencies": {
+        "fuse.js": "^7.0.0",
         "mysql": "^2.18.1"
     },
     "devDependencies": {
