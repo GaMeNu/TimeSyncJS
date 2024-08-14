@@ -9,11 +9,11 @@ import CmdUtils, {SubcommandDispatcher} from "../../util/command_utils";
 
 
 let cmd = new SlashCommandBuilder()
-.setName("set")
-.setDescription("Settings command");
+.setName("time")
+.setDescription("Getting or converting time");
 
 // Get subcommands dir
-const timePath = path.join(__dirname, "set")
+const timePath = path.join(__dirname, "time")
 const dspt = SubcommandDispatcher.fromPath(timePath, cmd);
 
 

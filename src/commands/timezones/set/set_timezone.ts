@@ -5,7 +5,11 @@ import Fuse from "fuse.js";
 import DBAPI from "../../../db/db_api";
 import { IANATimeZones } from "../../../util/timezones";
 
+import FuzzyTz from "../../../util/fuzzy_tz";
+
 let configdata = require("../../../../config.json");
+
+
 
 
 async function execute(interaction: discord.ChatInputCommandInteraction) {
@@ -25,37 +29,23 @@ async function execute(interaction: discord.ChatInputCommandInteraction) {
     // Check whether the timezone exists
     if (!IANATimeZones.includes(tz)){
 
-        // Perform fuzzy search for closest IANA timezone
-        let fuse = new Fuse(IANATimeZones, {
-            includeScore: true,
-            shouldSort: true
-        });
-        let tzRes = fuse.search(tz).filter((val) => {
-            if (val.score == undefined) return true;
-            return (val.score <= 0.4);
-        });
-
-        // A few datas we need for the repsonse generation
-        let tooManyResults = tzRes.length > 10;
-        let originalLen = tzRes.length;
-
-        if (tooManyResults) tzRes = tzRes.slice(0, 10);
+        let searchPage = FuzzyTz.fuzzySearchPageTz(tz, 0, 10);
 
         // Generate response string 
-        let response = "Could not find specified timezones."
-        if (originalLen > 0) {
+        let response = "Could not find specified timezone."
+
+        if (searchPage.totalResultsCount > 0){
+
             response += " Did you mean any of the folllowing options?\n"
-            tzRes.forEach(element => {
-                let name = element.item;
-                response += `- \`${name}\`\n`
+            searchPage.results.forEach(element => {
+                response += `- \`${element}\`\n`
             })
 
-            if (tooManyResults) {
-                let unincluded = (originalLen - tzRes.length)
+            if (searchPage.totalResultsCount > searchPage.results.length){
+                let unincluded = (searchPage.totalResultsCount - searchPage.results.length)
                 response += `\`${unincluded}\` more options are hidden...`
             }
         }
-
         await interaction.reply(response);
         return;
     }

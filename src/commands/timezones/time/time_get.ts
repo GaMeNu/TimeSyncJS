@@ -1,7 +1,7 @@
 import discord, { SlashCommandBuilder } from "discord.js";
-import DBAPI from "../../db/db_api";
+import DBAPI from "../../../db/db_api";
 import { SlashCommandSubcommandBuilder } from "discord.js";
-const configdata = require("../../../config.json");
+const configdata = require("../../../../config.json");
 
 async function execute(interaction: discord.ChatInputCommandInteraction){
     const DEFAULT_CALENDAR = configdata["default_calendar"];
@@ -49,6 +49,7 @@ async function execute(interaction: discord.ChatInputCommandInteraction){
 
     const currentTime = Date.now();
 
+    // Generate repsonse embed
     let embed = new discord.EmbedBuilder()
     .setColor(discord.Colors.Fuchsia)
     .setTitle(`${user.displayName}'s time`)
@@ -60,6 +61,7 @@ async function execute(interaction: discord.ChatInputCommandInteraction){
         }
     ]);
 
+    // Check default calendar
     if (calendar !== DEFAULT_CALENDAR){
         embed.addFields({
                 name: "Current Date",
@@ -95,8 +97,8 @@ async function execute(interaction: discord.ChatInputCommandInteraction){
 
 }
 
-let cmd = new SlashCommandBuilder()
-        .setName("gettime")
+let cmd = new SlashCommandSubcommandBuilder()
+        .setName("get")
         .setDescription("Set your timezone")
         .addUserOption(option => 
             option

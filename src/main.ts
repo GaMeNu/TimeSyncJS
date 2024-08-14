@@ -70,8 +70,8 @@ client.on(discord.Events.MessageCreate, async (message) => {
         if (message.author.id !== AUTHOR_ID) {
             await message.reply("No permission.")
         }
-        
-        if (!message.content.includes("TimeSync")){
+        let username = client.user?.username;
+        if (username !== undefined && !message.content.includes(username)){
             return;
         }
 

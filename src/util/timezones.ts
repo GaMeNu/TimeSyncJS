@@ -360,4 +360,4 @@ declare namespace Intl {
   function supportedValuesOf(input: Key): string[];
 }
 
-export const IANATimeZones = Intl.supportedValuesOf('timeZone');
+export const IANATimeZones = Intl.supportedValuesOf('timeZone').sort();
