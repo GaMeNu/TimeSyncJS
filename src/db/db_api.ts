@@ -90,6 +90,15 @@ module DBAPI {
 
         return res[0];
     }
+
+    export async function deleteUserData(discord_id: number) {
+        let res;
+        try {
+            res = await queryDatabase("DELETE FROM timezones WHERE discord_id=?", [discord_id]);
+        } catch (error){
+            handleError(error);
+        }
+    }
 }
 
 export {DBAPI as default};

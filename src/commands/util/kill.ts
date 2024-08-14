@@ -12,7 +12,7 @@ async function execute(interaction: CommandInteraction){
         return;
     }
     await interaction.reply("Killing bot");
-    console.log("Bot killed by author")
+    console.log("Bot killed by author.")
     process.exit(0);
 }
 

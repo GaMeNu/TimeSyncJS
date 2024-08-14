@@ -32,7 +32,7 @@ async function execute(interaction: discord.ChatInputCommandInteraction) {
         let searchPage = FuzzyTz.fuzzySearchPageTz(tz, 0, 10);
 
         // Generate response string 
-        let response = "Could not find specified timezone."
+        let response = `Could not find specified timezone \`${tz}\`.`
 
         if (searchPage.totalResultsCount > 0){
 

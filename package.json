@@ -19,9 +19,11 @@
     "license": "GPL-3.0-only",
     "dependencies": {
         "fuse.js": "^7.0.0",
+        "luxon": "^3.5.0",
         "mysql": "^2.18.1"
     },
     "devDependencies": {
+        "@types/luxon": "^3.4.2",
         "@types/mysql": "^2.15.26"
     }
 }
