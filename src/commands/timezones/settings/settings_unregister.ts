@@ -1,19 +1,20 @@
 import discord, { SlashCommandSubcommandBuilder } from "discord.js";
-import { SlashCommandBuilder } from "discord.js";
-import fs from "node:fs";
-import path from "node:path";
-
-import DBAPI from "../../db/db_api";
-import CmdUtils, {SubcommandDispatcher} from "../../util/command_utils";
+import DBAPI from "../../../db/db_api";
+const configdata = require("../../../../config.json");
 
 
 
-let cmd = new SlashCommandBuilder()
+let cmd = new SlashCommandSubcommandBuilder()
 .setName("unregister")
-.setDescription("Get a user's profile")
+.setDescription("Unregister and delete your TimeSync data")
 .addStringOption(option => option
     .setName("confirmation")
     .setDescription("Enter confirmation string")
+    .setRequired(false)
+)
+.addUserOption(option => option
+    .setName("user")
+    .setDescription("Specific user to unregister (Author only)")
     .setRequired(false)
 );
 
@@ -21,16 +22,28 @@ let cmd = new SlashCommandBuilder()
 
 async function execute(interaction: discord.ChatInputCommandInteraction){
     let confirmation = interaction.options.getString("confirmation");
-    
-    let userID = parseInt(interaction.user.id, 10);
 
-    const confirmedString = interaction.user.username;
+    let user = interaction.options.getUser("user");
+    if (user != null && interaction.user.id !== configdata["author_id"]){
+        await interaction.reply("No permission.");
+        return;
+    }
+    if (user == null) user = interaction.user;
+    
+    const userID = parseInt(user.id, 10);
+    const confirmedString = user.username;
+
+    const userData = await DBAPI.getUserData(userID);
+    if (userData == null){
+        await interaction.reply("You haven't registered your timezone yet!");
+        return;
+    }
 
     if (confirmation == null){
         interaction.reply(`This action will **delete all data** registered with your discord ID.
 **WARNING:** This action is **IRREVERSIBLE**!
 Type the command again with your username in the confirmation box to confirm unregistration
-(\`/${cmd.name} confirmation:${confirmedString}\`)`)
+(\`/settings unregister confirmation:${confirmedString}\`)`)
             return;
     }
 
