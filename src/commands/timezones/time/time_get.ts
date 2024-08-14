@@ -9,6 +9,7 @@ async function execute(interaction: discord.ChatInputCommandInteraction){
     let user = interaction.options.getUser("user", true);
     let userID = Number.parseInt(user.id, 10);
     let userData = await DBAPI.getUserData(userID);
+    let originalUserData = await DBAPI.getUserData(parseInt(interaction.user.id, 10));
 
     if (userData === null){
         await interaction.reply(`\`@${user.username}\` has not set their timezone yet.`);
@@ -16,9 +17,14 @@ async function execute(interaction: discord.ChatInputCommandInteraction){
     }
 
     let timezone = userData.timezone;
-    let calendar = userData.calendar;
 
-    if (calendar === null) {
+    let calendar;
+
+    if (originalUserData != null){
+        calendar = originalUserData.calendar;
+    }
+
+    if (calendar == null) {
         calendar = DEFAULT_CALENDAR // Default calendar
     }
 
