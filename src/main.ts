@@ -27,7 +27,7 @@ client.once(discord.Events.ClientReady, readyClient => {
 })
 
 
-client.on(discord.Events.InteractionCreate, async interaction => {
+client.on(discord.Events.InteractionCreate, async (interaction: discord.Interaction) => {
     if (!interaction.isChatInputCommand()) return;
 
     let command;
@@ -46,22 +46,35 @@ client.on(discord.Events.InteractionCreate, async interaction => {
     try {
 		await command.execute(interaction);
 	} catch (error) {
-		console.error(error);
-		if (interaction.replied || interaction.deferred) {
-			await interaction.followUp({ content: 'There was an error while executing this command!', ephemeral: true });
-		} else {
-			await interaction.reply({ content: 'There was an error while executing this command!', ephemeral: true });
-		}
+        const actErr: Error = error as Error;
+        console.error(error);
+        let channel = interaction.channel;
+
+        let resp = `The previous command had an error while executing :(\n${actErr.name}: ${actErr.message}`;
+        if ('code' in actErr){
+            resp += `\nCode: \`${actErr.code}\``
+        }
+
+        if (interaction.isRepliable()){
+            await interaction.reply(resp);
+        } else {
+            await channel?.send(resp);
+        }
 	}
 
 
 })
 
 client.on(discord.Events.MessageCreate, async (message) => {
-    if (message.content === "/sync_cmds"){
+    if (message.content.startsWith("/sync_cmds")){
         if (message.author.id !== AUTHOR_ID) {
             await message.reply("No permission.")
         }
+        
+        if (!message.content.includes("TimeSync")){
+            return;
+        }
+
         let beginMsg = await message.reply("Begun syncing commands!");
         try {
             await deploy_cmds(client);

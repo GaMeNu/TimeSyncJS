@@ -26,6 +26,8 @@ export async function set_client_commands(client: discord.Client){
     const foldersPath = path.join(__dirname, "commands");
     const commandFolders = fs.readdirSync(foldersPath);
 
+    client.commands.clear();
+
     for (const folder of commandFolders){
         const commandsPath = path.join(foldersPath, folder)
         const commandFiles = fs.readdirSync(commandsPath).filter(file => {
@@ -37,6 +39,7 @@ export async function set_client_commands(client: discord.Client){
             
             const command = require(filePath)
             if ('data' in command && 'execute' in command){
+                console.log(`/${command.data.name} @ ${filePath}`)
                 client.commands.set(command.data.name, command);
             } else {
                 console.log(`[WARNING] Command missing required property "data" or "exclude"at ${filePath}`);

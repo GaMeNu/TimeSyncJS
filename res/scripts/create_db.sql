@@ -12,8 +12,10 @@ DROP TABLE IF EXISTS `timezones` ;
 CREATE TABLE IF NOT EXISTS `timezones` (
   `discord_id` BIGINT(11) NOT NULL,
   `timezone` TEXT NOT NULL,
+  `calendar` VARCHAR(32) NULL,
   PRIMARY KEY (`discord_id`),
   UNIQUE INDEX `discord_id_UNIQUE` (`discord_id` ASC) VISIBLE)
+  
 ENGINE = InnoDB;
 
 

@@ -67,7 +67,7 @@ async function execute(interaction: discord.ChatInputCommandInteraction) {
 
     let userIDInt = Number.parseInt(userID, 10);
 
-    let res = await DBAPI.addUser(userIDInt, tz);
+    let res = await DBAPI.setUserTimezone(userIDInt, tz);
     try {
         if (user !== null ) await interaction.reply(`Successfully set \`@${user.username}\`'s timezone to \`${tz}\`!`);
         else await interaction.reply(`Successfully set your timezone to \`${tz}\`!`);
@@ -79,7 +79,7 @@ async function execute(interaction: discord.ChatInputCommandInteraction) {
 }
 
 let cmd = new SlashCommandSubcommandBuilder()
-        .setName("set")
+        .setName("timezone")
         .setDescription("Set your timezone")
         .addStringOption(option => 
             option

@@ -8,18 +8,18 @@ import DBAPI from "../../db/db_api";
 
 
 let cmd = new SlashCommandBuilder()
-.setName("time")
-.setDescription("Timezone management command");
+.setName("set")
+.setDescription("Settings command");
 
 // Command dispatcher ("_" is default value)
 const subcFuncs: { [key: string]: ((interaction: discord.ChatInputCommandInteraction) => Promise<void>) } = {
-    "_": async function(interaction: discord.ChatInputCommandInteraction){
+    "_": async (interaction: discord.ChatInputCommandInteraction) => {
         await interaction.reply("Unrecognized subcommand (how did we get here?)")
     }
 }
 
 // Get subcommands dir
-const timePath = path.join(__dirname, "time")
+const timePath = path.join(__dirname, "set")
 const timeDir = fs.readdirSync(timePath);
 
 // Iterate over and add each command to the dispatcher
@@ -38,9 +38,10 @@ for (const subcName of timeDir){
 
 
 async function execute(interaction: discord.ChatInputCommandInteraction){
+    // Dispatch the command
     let subcommand = interaction.options.getSubcommand();
     let func;
-
+    
     if (!(subcommand in subcFuncs)) func = subcFuncs["_"];
     else func = subcFuncs[subcommand];
     
