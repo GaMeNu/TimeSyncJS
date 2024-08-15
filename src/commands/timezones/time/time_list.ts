@@ -31,6 +31,11 @@ async function execute(interaction: discord.ChatInputCommandInteraction){
         return;
     }
 
+    if (res.totalResultsCount === 0 ){
+        await interaction.followUp("No results found.");
+        return;
+    }
+
     if ((page + 1) <= 0){
         await interaction.followUp("Page number cannot be **lower than 1**!")
         return;
@@ -38,11 +43,6 @@ async function execute(interaction: discord.ChatInputCommandInteraction){
 
     if ((page + 1) > res.totalPages){
         await interaction.followUp("Page number is **too high**! Please enter a lower page number")
-        return;
-    }
-    
-    if (res.totalResultsCount === 0 ){
-        await interaction.followUp("No results found.");
         return;
     }
 
