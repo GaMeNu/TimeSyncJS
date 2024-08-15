@@ -1,11 +1,6 @@
-import dotenv from "dotenv";
 import discord from "discord.js";
 import { deploy_cmds, set_client_commands } from "./deploy_cmds";
-import { IANATimeZones } from "./util/timezones";
 const configdata = require("../config.json");
-
-
-dotenv.config(); // ENV VARS
 
 const client = new discord.Client({intents: [discord.GatewayIntentBits.Guilds, discord.GatewayIntentBits.GuildMessages, discord.GatewayIntentBits.MessageContent, discord.GatewayIntentBits.GuildIntegrations]});
 

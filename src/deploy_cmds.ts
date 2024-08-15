@@ -1,10 +1,7 @@
-import dotenv, { config } from "dotenv";
 import fs from "node:fs";
 import path from "node:path";
 import discord, { REST } from "discord.js";
 const configdata = require("../config.json");
-
-dotenv.config();
 
 const TOKEN: string = configdata["token"];
 
