@@ -105,7 +105,7 @@ async function execute(interaction: discord.ChatInputCommandInteraction){
 
 let cmd = new SlashCommandSubcommandBuilder()
         .setName("get")
-        .setDescription("Set your timezone")
+        .setDescription("Get a user's timezone")
         .addUserOption(option => 
             option
             .setName("user")
