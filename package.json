@@ -1,7 +1,7 @@
 {
     "name": "timesync-js",
     "version": "1.0.0",
-    "description": "A Discord bot allowing people to register their timezone, and get others' timezone",
+    "description": "A Discord bot allowing for easy time and timezone conversion",
     "main": "main.ts",
     "scripts": {
         "test": "echo \"Error: no test specified\" && exit 1",
@@ -18,6 +18,7 @@
     "author": "GaMeNu (@gamenu)",
     "license": "GPL-3.0-only",
     "dependencies": {
+        "discord.js": "^14.15.3",
         "fuse.js": "^7.0.0",
         "luxon": "^3.5.0",
         "mysql": "^2.18.1"
