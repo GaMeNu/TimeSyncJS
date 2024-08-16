@@ -1,6 +1,6 @@
-import discord, { SlashCommandBuilder } from "discord.js";
+import discord, { SlashCommandSubcommandBuilder } from "discord.js";
+import { DateTime } from "luxon";
 import DBAPI from "../../../db/db_api";
-import { SlashCommandSubcommandBuilder } from "discord.js";
 const configdata = require("../../../../config.json");
 
 async function execute(interaction: discord.ChatInputCommandInteraction){
@@ -28,32 +28,10 @@ async function execute(interaction: discord.ChatInputCommandInteraction){
         calendar = DEFAULT_CALENDAR // Default calendar
     }
 
-    const dateFormatter = Intl.DateTimeFormat([], {
-        timeZone: timezone,
-        year: 'numeric',
-        month: 'numeric',
-        day: 'numeric',
-        calendar: calendar
-    });
-
-    const defaultDateFormatter = Intl.DateTimeFormat([], {
-        timeZone: timezone,
-        year: 'numeric',
-        month: 'numeric',
-        day: 'numeric',
-        calendar: DEFAULT_CALENDAR
-    });
-
-    const timeFormatter = Intl.DateTimeFormat([], {
-        timeZone: timezone,
-        hour: 'numeric',
-        minute: 'numeric',
-        second: 'numeric'
-    });
-
-
-
-    const currentTime = Date.now();
+    const date = DateTime.local({
+        zone: timezone,
+        outputCalendar: calendar
+    })
 
     // Generate repsonse embed
     let embed = new discord.EmbedBuilder()
@@ -62,7 +40,7 @@ async function execute(interaction: discord.ChatInputCommandInteraction){
     .setThumbnail(user.displayAvatarURL())
     .addFields([{
             name: "Current Time",
-            value: `**${timeFormatter.format(currentTime)}**`,
+            value: `**${date.toLocaleString(DateTime.TIME_24_WITH_SECONDS)}**`,
             inline: false
         }
     ]);
@@ -71,19 +49,19 @@ async function execute(interaction: discord.ChatInputCommandInteraction){
     if (calendar !== DEFAULT_CALENDAR){
         embed.addFields({
                 name: "Current Date",
-                value: `**${dateFormatter.format(currentTime)}**`,
+                value: `**${date.toFormat("LLL dd, yyyy")}**`,
                 inline: true
             },
             {
                 name: `Current Date (default)`,
-                value: `**${defaultDateFormatter.format(currentTime)}**`,
+                value: `**${date.reconfigure({outputCalendar: DEFAULT_CALENDAR}).toFormat("LLL dd, yyyy")}**`,
                 inline: true
             }
         )
     } else {
         embed.addFields({
                 name: "Current Date",
-                value: `**${dateFormatter.format(currentTime)}**`,
+                value: `**${date.toFormat("LLL dd, yyyy")}**`,
                 inline: false
             }
         )
