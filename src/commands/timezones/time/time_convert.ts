@@ -242,7 +242,7 @@ async function execute(interaction: discord.ChatInputCommandInteraction){
         },
         {
             name: "Time Difference",
-            value: offsetTxt,
+            value: offsetM !== 0 ? offsetTxt : "No difference",
             inline: true
         },
         {
