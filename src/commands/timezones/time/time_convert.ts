@@ -212,7 +212,7 @@ async function execute(interaction: discord.ChatInputCommandInteraction){
     .addFields(
         {
             name: "Converted Time",
-            value: converted.toFormat("TT\nyyyy LLL dd"),
+            value: `${formatTime(converted)}\n${formatDate(converted)}`,
             inline: true
         },
         {
