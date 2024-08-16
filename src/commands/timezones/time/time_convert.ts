@@ -2,7 +2,7 @@ import discord, { SlashCommandBuilder } from "discord.js";
 import { SlashCommandSubcommandBuilder } from "discord.js";
 import { DateTime } from "luxon";
 import DBAPI from "../../../db/db_api";
-import { IANATimeZones } from "../../../util/timezones";
+import { formatDate, formatTime, IANATimeZones } from "../../../util/timezones";
 import FuzzyTz from "../../../util/fuzzy_tz";
 const configdata = require("../../../../config.json");
 
@@ -227,7 +227,7 @@ async function execute(interaction: discord.ChatInputCommandInteraction){
         },
         {
             name: "Original Time",
-            value: datetime.toFormat("TT\nyyyy LLL dd"),
+            value: `${formatTime(datetime)}\n${formatDate(datetime)}`,
             inline: true
         },
         {

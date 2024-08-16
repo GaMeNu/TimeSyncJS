@@ -353,6 +353,8 @@ let IANATimeZonesPrivate = [
 IANATimeZonesPrivate.sort();
 */
 
+import { DateTime } from "luxon";
+
 declare namespace Intl {
 
   type Key = 'calendar' | 'collation' | 'currency' | 'numberingSystem' | 'timeZone' | 'unit';
@@ -361,3 +363,11 @@ declare namespace Intl {
 }
 
 export const IANATimeZones = Intl.supportedValuesOf('timeZone').sort();
+
+export function formatDate(datetime: DateTime): string {
+  return datetime.toFormat("LLL dd, yyyy");
+}
+
+export function formatTime(datetime: DateTime): string {
+  return datetime.toLocaleString(DateTime.TIME_24_WITH_SECONDS);
+}

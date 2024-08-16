@@ -1,6 +1,7 @@
 import discord, { SlashCommandSubcommandBuilder } from "discord.js";
 import { DateTime } from "luxon";
 import DBAPI from "../../../db/db_api";
+import { formatDate, formatTime } from "../../../util/timezones";
 const configdata = require("../../../../config.json");
 
 async function execute(interaction: discord.ChatInputCommandInteraction){
@@ -40,29 +41,24 @@ async function execute(interaction: discord.ChatInputCommandInteraction){
     .setThumbnail(user.displayAvatarURL())
     .addFields([{
             name: "Current Time",
-            value: `**${date.toLocaleString(DateTime.TIME_24_WITH_SECONDS)}**`,
+            value: `**${formatTime(date)}**`,
             inline: false
+        },
+        {
+            name: "Current Date",
+            value: `**${formatDate(date)}**`,
+            inline: calendar !== DEFAULT_CALENDAR
         }
     ]);
+    
 
     // Check default calendar
     if (calendar !== DEFAULT_CALENDAR){
-        embed.addFields({
-                name: "Current Date",
-                value: `**${date.toFormat("LLL dd, yyyy")}**`,
-                inline: true
-            },
+        embed.addFields(
             {
                 name: `Current Date (default)`,
-                value: `**${date.reconfigure({outputCalendar: DEFAULT_CALENDAR}).toFormat("LLL dd, yyyy")}**`,
+                value: `**${formatDate(date.reconfigure({outputCalendar: DEFAULT_CALENDAR}))}**`,
                 inline: true
-            }
-        )
-    } else {
-        embed.addFields({
-                name: "Current Date",
-                value: `**${date.toFormat("LLL dd, yyyy")}**`,
-                inline: false
             }
         )
     }
