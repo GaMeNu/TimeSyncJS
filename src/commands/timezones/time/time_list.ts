@@ -1,60 +1,96 @@
-import discord from "discord.js";
+import discord, { ActionRow, ActionRowBuilder, ButtonBuilder } from "discord.js";
 import { SlashCommandSubcommandBuilder } from "discord.js";
 import { IANATimeZones } from "../../../util/timezones";
 import FuzzyTz from "../../../util/fuzzy_tz";
 
 const MAX_RESULTS_IN_PAGE = 25;
 
+class SearchPageError extends Error{
+    constructor(message: string){
+        super(message);
+        this.name = "SearchPageError"
+    }
+}
+
+export function buildSearchPage(searchPage: FuzzyTz.SearchResultsPage): string{
+
+    let page = searchPage.page;
+
+    if (searchPage.totalResultsCount === 0 ){
+        return "No results found.";
+    }
+
+    if ((page + 1) <= 0){
+        return "Page number cannot be **lower than 1**!";
+    }
+
+    if ((page + 1) > searchPage.totalPages){
+        return "Page number is **too high**! Please enter a lower page number";
+    }
+
+    // Construct results
+    let resp: string = `### Page ${searchPage.page + 1}/${searchPage.totalPages}\n`
+    searchPage.results.forEach(element => {
+        resp += `- \`${element}\`\n`
+    });
+
+    resp += `-# Showing \`${searchPage.startIndex+1}-${searchPage.endIndex}\` (\`${searchPage.results.length}\`) out of \`${searchPage.totalResultsCount}\` results.`
+    return resp;
+}
+
 async function execute(interaction: discord.ChatInputCommandInteraction){
     let page = interaction.options.getNumber("page");
+    await interaction.deferReply();
 
     if (page === null) page = 0;
     else page--;
 
-    let search = interaction.options.getString("search");
-    
+    let tz = interaction.options.getString("search");
+
     let res: FuzzyTz.SearchResultsPage;
-
-    await interaction.deferReply();
-
+    
     try {
-        if (search === null){
+        if (tz === null){
             res = FuzzyTz.createPage(IANATimeZones, page, MAX_RESULTS_IN_PAGE);
         } else {
-            res = FuzzyTz.fuzzySearchPageTz(search, page, MAX_RESULTS_IN_PAGE);
+            res = FuzzyTz.fuzzySearchPageTz(tz, page, MAX_RESULTS_IN_PAGE);
         }
     } catch (error){
         if (error instanceof RangeError) {
-            await interaction.reply("Invalid page number!");
-            return;
+            return "Invalid page number!";
         }
-        return;
+        throw error;
     }
 
-    if (res.totalResultsCount === 0 ){
-        await interaction.followUp("No results found.");
-        return;
-    }
+    let resp = buildSearchPage(res);
+
+    let btnPrev = new ButtonBuilder()
+    .setCustomId("list_page_prev")
+    .setLabel("◀");
+
+    let btnNext = new ButtonBuilder()
+    .setCustomId("list_page_next")
+    .setLabel("▶");
 
     if ((page + 1) <= 0){
-        await interaction.followUp("Page number cannot be **lower than 1**!")
-        return;
+        btnPrev.setStyle(discord.ButtonStyle.Secondary);
+    } else {
+        btnPrev.setStyle(discord.ButtonStyle.Primary)
     }
 
     if ((page + 1) > res.totalPages){
-        await interaction.followUp("Page number is **too high**! Please enter a lower page number")
-        return;
+        btnNext.setStyle(discord.ButtonStyle.Secondary);
+    } else {
+        btnNext.setStyle(discord.ButtonStyle.Primary)
     }
 
-    // Construct results
-    let resp: string = `### Page ${res.page + 1}/${res.totalPages}\n`
-    res.results.forEach(element => {
-        resp += `- \`${element}\`\n`
+    let actionRow = new ActionRowBuilder<ButtonBuilder>().addComponents(btnPrev, btnNext);
+
+
+    await interaction.followUp({
+        content: resp,
+        components: [ actionRow ]
     });
-
-    resp += `-# Showing \`${res.startIndex+1}-${res.endIndex}\` (\`${res.results.length}\`) out of \`${res.totalResultsCount}\` results.`
-
-    await interaction.followUp(resp);
 }
 
 let cmd = new SlashCommandSubcommandBuilder()
