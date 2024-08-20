@@ -1,11 +1,10 @@
 // It is theoretically possible to change this to the MariaDB connector, but it IS untested and may require debugging.
 import dblib from "mysql";
-import fs from "node:fs";
-const configdata = require("../../config.json");
+import Globals from "../util/globals";
 
-const DB_USERNAME = configdata["db_username"];
-const DB_PASSWORD = configdata["db_password"];
-const DATABASE = configdata["database"];
+const DB_USERNAME = Globals.DB_USERNAME;
+const DB_PASSWORD = Globals.DB_PASSWORD;
+const DATABASE = Globals.DATABASE;
 
 export const pool = dblib.createPool({
     host: "localhost",

@@ -1,5 +1,5 @@
 import { CommandInteraction, SlashCommandBuilder } from "discord.js";
-const configdata = require("../../../config.json");
+import Globals from "../../util/globals";
 
 let cmd = new SlashCommandBuilder()
     .setName("kill")
@@ -7,7 +7,7 @@ let cmd = new SlashCommandBuilder()
 
 
 async function execute(interaction: CommandInteraction){
-    if (interaction.user.id !== configdata["author_id"]) {
+    if (interaction.user.id !== Globals.AUTHOR_ID) {
         await interaction.reply("No permission");
         return;
     }

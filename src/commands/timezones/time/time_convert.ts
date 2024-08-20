@@ -4,7 +4,7 @@ import { DateTime } from "luxon";
 import DBAPI from "../../../db/db_api";
 import { formatDate, formatTime, IANATimeZones } from "../../../util/timezones";
 import FuzzyTz from "../../../util/fuzzy_tz";
-const configdata = require("../../../../config.json");
+import Globals from "../../../util/globals";
 
 function parseTime(time: string, step: number): DateTime {
 	
@@ -117,7 +117,7 @@ function generateInvalidTzPage(tz: string): string {
 }
 
 async function execute(interaction: discord.ChatInputCommandInteraction){
-    const DEFAULT_CALENDAR = configdata["default_calendar"];
+    const DEFAULT_CALENDAR = Globals.DEFAULT_CALENDAR;
 
     const userID = Number.parseInt(interaction.user.id, 10);
     const userData = await DBAPI.getUserData(userID);
@@ -142,7 +142,7 @@ async function execute(interaction: discord.ChatInputCommandInteraction){
 
     if (source_tz === null) {
         if (!isRegisteredUser){
-            interaction.reply("Source timezone is null, and user is not registered!");
+            interaction.reply("Could not get source timezone! source_tz is unfilled, and you do not appear to have a registered timezone.");
             return;
         }
         // At this point we're pretty sure the user has a registered timezone

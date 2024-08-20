@@ -2,10 +2,10 @@ import discord, { SlashCommandSubcommandBuilder } from "discord.js";
 import { DateTime } from "luxon";
 import DBAPI from "../../../db/db_api";
 import { formatDate, formatTime } from "../../../util/timezones";
-const configdata = require("../../../../config.json");
+import Globals from "../../../util/globals";
 
 async function execute(interaction: discord.ChatInputCommandInteraction){
-    const DEFAULT_CALENDAR = configdata["default_calendar"];
+    const DEFAULT_CALENDAR = Globals.DEFAULT_CALENDAR;
     
     let user = interaction.options.getUser("user", true);
     let userID = Number.parseInt(user.id, 10);
@@ -23,9 +23,7 @@ async function execute(interaction: discord.ChatInputCommandInteraction){
 
     if (originalUserData != null){
         calendar = originalUserData.calendar;
-    }
-
-    if (calendar == null) {
+    } else {
         calendar = DEFAULT_CALENDAR // Default calendar
     }
 
