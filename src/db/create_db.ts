@@ -1,5 +1,5 @@
 // It is theoretically possible to change this to the MariaDB connector, but it IS untested and may require debugging.
-import dblib from "mysql";
+import dblib from "mysql2";
 import fs from "node:fs";
 import Globals from "../util/globals";
 
@@ -20,8 +20,13 @@ connection.connect();
 
 let content = fs.readFileSync("./res/scripts/create_db.sql");
 let script = content.toString();
-
-connection.query(script);
+try {
+    let res = connection.query(script);
+} catch (error) {
+    console.log("An error has occured")
+    connection.end()
+    throw error;
+}
 connection.commit();
 connection.end()
 
