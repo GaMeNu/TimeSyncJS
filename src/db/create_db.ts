@@ -45,6 +45,13 @@ if (DB_VERSION == null) {
     finish_version(connection, "1.0.0");
 }
 
+
+if (DB_VERSION == "1.0.0") {
+    connection.query(`ALTER TABLE timezones 
+ADD sleep_time TIME;`);
+    finish_version(connection, "sleep-1.0.0");
+}
+
 connection.end();
 if (wasUpdated) {
     console.log("Successfully recreated/updated database!");
