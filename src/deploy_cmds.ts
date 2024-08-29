@@ -1,11 +1,11 @@
 import fs from "node:fs";
 import path from "node:path";
 import discord, { REST } from "discord.js";
-import Globals from "./util/globals";
+import GlobalsManager from "./util/globals";
 
-const TOKEN: string = Globals.BOT_TOKEN;
+const TOKEN: string = GlobalsManager.INSTANCE.BOT_TOKEN;
 
-const CLIENT_ID: string = Globals.CLIENT_ID;
+const CLIENT_ID: string = GlobalsManager.INSTANCE.CLIENT_ID;
 
 export async function deploy_cmds(client: discord.Client){
     const commands = prepare_commands(client);

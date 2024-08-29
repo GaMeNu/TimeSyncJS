@@ -4,7 +4,7 @@ import Fuse from "fuse.js";
 
 import DBAPI from "../../../db/db_api";
 import { IANATimeZones } from "../../../util/timezones";
-import Globals from "../../../util/globals";
+import GM from "../../../util/globals";
 
 
 async function execute(interaction: discord.ChatInputCommandInteraction) {
@@ -16,7 +16,7 @@ async function execute(interaction: discord.ChatInputCommandInteraction) {
 
     let user = interaction.options.getUser("user");
 
-    if (user !== null && interaction.user.id !== Globals.AUTHOR_ID){
+    if (user !== null && interaction.user.id !== GM.INSTANCE.AUTHOR_ID){
         await interaction.reply("You do not have permission to change others' timezone.");
         return;
     }

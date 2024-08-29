@@ -4,7 +4,7 @@ import { DateTime } from "luxon";
 import DBAPI from "../../../db/db_api";
 import { formatDate, formatTime, IANATimeZones } from "../../../util/timezones";
 import FuzzyTz from "../../../util/fuzzy_tz";
-import Globals from "../../../util/globals";
+import GM from "../../../util/globals";
 
 function parseTime(time: string, step: number): DateTime {
 	
@@ -117,7 +117,7 @@ function generateInvalidTzPage(tz: string): string {
 }
 
 async function execute(interaction: discord.ChatInputCommandInteraction){
-    const DEFAULT_CALENDAR = Globals.DEFAULT_CALENDAR;
+    const DEFAULT_CALENDAR = GM.INSTANCE.DEFAULT_CALENDAR;
 
     const userID = Number.parseInt(interaction.user.id, 10);
     const userData = await DBAPI.getUserData(userID);

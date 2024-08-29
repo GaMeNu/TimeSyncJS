@@ -1,6 +1,6 @@
 import discord, { SlashCommandSubcommandBuilder } from "discord.js";
 import DBAPI from "../../../db/db_api";
-import Globals from "../../../util/globals";
+import GM from "../../../util/globals";
 
 
 
@@ -24,7 +24,7 @@ async function execute(interaction: discord.ChatInputCommandInteraction){
     let confirmation = interaction.options.getString("confirmation");
 
     let user = interaction.options.getUser("user");
-    if (user != null && interaction.user.id !== Globals.AUTHOR_ID){
+    if (user != null && interaction.user.id !== GM.INSTANCE.AUTHOR_ID){
         await interaction.reply("No permission.");
         return;
     }

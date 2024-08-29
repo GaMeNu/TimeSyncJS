@@ -1,6 +1,6 @@
 import discord from "discord.js";
 import { CommandInteraction, EmbedBuilder, SlashCommandBuilder } from "discord.js";
-import Globals from "../../util/globals";
+import GM from "../../util/globals";
 
 let cmd = new SlashCommandBuilder()
     .setName("about")

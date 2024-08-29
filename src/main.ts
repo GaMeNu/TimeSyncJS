@@ -1,12 +1,12 @@
 import discord from "discord.js";
 import { deploy_cmds, set_client_commands } from "./deploy_cmds";
-import Globals from "./util/globals";
+import GM from "./util/globals";
 
 const client = new discord.Client({intents: [discord.GatewayIntentBits.Guilds, discord.GatewayIntentBits.GuildMessages, discord.GatewayIntentBits.MessageContent, discord.GatewayIntentBits.GuildIntegrations]});
 
-const TOKEN: string = Globals.BOT_TOKEN;
+const TOKEN: string = GM.INSTANCE.BOT_TOKEN;
 
-const AUTHOR_ID: string = Globals.AUTHOR_ID;
+const AUTHOR_ID: string = GM.INSTANCE.AUTHOR_ID;
 
 client.once(discord.Events.ClientReady, readyClient => {
     console.log("Connected to the Discord Gateway.");

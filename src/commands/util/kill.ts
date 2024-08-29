@@ -1,5 +1,5 @@
 import { CommandInteraction, SlashCommandBuilder } from "discord.js";
-import Globals from "../../util/globals";
+import GM from "../../util/globals";
 
 let cmd = new SlashCommandBuilder()
     .setName("kill")
@@ -7,7 +7,7 @@ let cmd = new SlashCommandBuilder()
 
 
 async function execute(interaction: CommandInteraction){
-    if (interaction.user.id !== Globals.AUTHOR_ID) {
+    if (interaction.user.id !== GM.INSTANCE.AUTHOR_ID) {
         await interaction.reply("No permission");
         return;
     }

@@ -2,10 +2,10 @@ import discord, { SlashCommandSubcommandBuilder } from "discord.js";
 import { DateTime } from "luxon";
 import DBAPI from "../../../db/db_api";
 import { formatDate, formatTime } from "../../../util/timezones";
-import Globals from "../../../util/globals";
+import GM from "../../../util/globals";
 
 async function execute(interaction: discord.ChatInputCommandInteraction){
-    const DEFAULT_CALENDAR = Globals.DEFAULT_CALENDAR;
+    const DEFAULT_CALENDAR = GM.INSTANCE.DEFAULT_CALENDAR;
     
     let user = interaction.options.getUser("user", true);
     let userID = Number.parseInt(user.id, 10);
