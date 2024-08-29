@@ -21,16 +21,22 @@ function finish_version(connection: Connection, newVersion: string){
     console.log(`Database updated to version ${DB_VERSION}`);
 }
 
-const connection = dblib.createConnection({
-    host: "localhost",
-    port: 3306,
-    user: DB_USERNAME,
-    password: DB_PASSWORD,
-    database: DATABASE,
-    multipleStatements: true
-});
+let connection;
+try {
+    connection = dblib.createConnection({
+        host: "localhost",
+        port: 3306,
+        user: DB_USERNAME,
+        password: DB_PASSWORD,
+        database: DATABASE,
+        multipleStatements: true
+    });
 
-connection.connect();
+    connection.connect();
+} catch (error) {
+    console.error("Could not connect to database");
+    throw error;
+}
 
 if (DB_VERSION == null) {
     let content = fs.readFileSync("./res/scripts/create_db.sql");
