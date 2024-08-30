@@ -14,7 +14,7 @@ import { DateTime } from "luxon";
 
 
 async function execute(interaction: discord.ChatInputCommandInteraction) {
-    let sleeptimeRaw = interaction.options.getString("timezone", true)
+    let sleeptimeRaw = interaction.options.getString("sleeptime", true)
 
     let user = interaction.options.getUser("user");
 
