@@ -27,6 +27,8 @@ async function execute(interaction: discord.ChatInputCommandInteraction) {
     if (user !== null) userID = user.id;
     else userID = interaction.user.id;
 
+    const userIDInt = parseInt(userID, 10)
+
     let sleeptime: DateTime;
     try {
         sleeptime = Inputs.parseTime(sleeptimeRaw);
@@ -37,7 +39,22 @@ async function execute(interaction: discord.ChatInputCommandInteraction) {
 
     let sleeptimeFmt = `${sleeptime.hour}:${sleeptime.minute}:${sleeptime.second}`;
 
-    DBAPI.reconfigureUser(parseInt(userID, 10), {sleep_time: sleeptimeFmt});
+    let userdata = await DBAPI.getUserData(userIDInt);
+    if (userdata === null){
+        await interaction.reply("Please set your timezone first!");
+        return;
+    }
+    
+    try {
+        await DBAPI.reconfigureUser(userIDInt, {sleep_time: sleeptimeFmt});
+    } catch (error) {
+        await interaction.reply("An error has occured while trying to set the sleep time!")
+        console.error(error);
+        return;
+    }
+
+    if (user !== null ) await interaction.reply(`Successfully set \`@${user.username}\`'s sleep time to \`${sleeptimeFmt}\`!`);
+    else await interaction.reply(`Successfully set your sleep time to \`${sleeptimeFmt}\`!`);
 }
 
 let cmd = new SlashCommandSubcommandBuilder()
