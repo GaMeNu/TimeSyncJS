@@ -37,7 +37,7 @@ async function execute(interaction: discord.ChatInputCommandInteraction) {
         return;
     }
 
-    let sleeptimeFmt = `${sleeptime.hour}:${sleeptime.minute}:${sleeptime.second}`;
+    let sleeptimeFmt = sleeptime.toFormat("HH:mm:ss");
 
     let userdata = await DBAPI.getUserData(userIDInt);
     if (userdata === null){
