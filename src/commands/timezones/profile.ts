@@ -50,6 +50,15 @@ async function execute(interaction: discord.ChatInputCommandInteraction){
             }
         )
     }
+    if (userData.sleep_time != null){
+        embed.addFields(
+            {
+                name: "Sleep time",
+                value: userData.sleep_time,
+                inline: false
+            }
+        )
+    }
 
     await interaction.reply({
         embeds: [ embed ]
