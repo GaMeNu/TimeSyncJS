@@ -5,93 +5,9 @@ import DBAPI from "../../../db/db_api";
 import { formatDate, formatTime, IANATimeZones } from "../../../util/timezones";
 import FuzzyTz from "../../../util/fuzzy_tz";
 import GM from "../../../util/globals";
+import Inputs from "../../../util/inputs";
 
-function parseTime(time: string, step: number): DateTime {
-	
-	let hour, minute, second, stepMinute,
-		pm = time.match(/p/i) !== null,
-		num = time.replace(/[^0-9]/g, '');
-	
-	// Parse for hour, minute, second
-	switch(num.length) {
-        case 6:
-            hour = parseInt(num[0] + num[1], 10);
-            minute = parseInt(num[2] + num[3], 10);
-            second = parseInt(num[4] + num[5], 10);
-            break;
-        case 5:
-            hour = parseInt(num[0], 10);
-            minute = parseInt(num[1] + num[2], 10);
-            second = parseInt(num[3] + num[4], 10);
-            break;
-        case 4:
-            hour = parseInt(num[0] + num[1], 10);
-            minute = parseInt(num[2] + num[3], 10);
-            second = 0;
-            break;
-        case 3:
-            hour = parseInt(num[0], 10);
-            minute = parseInt(num[1] + num[2], 10);
-            second = 0;
-            break;
-        case 2:
-        case 1:
-            hour = parseInt(num[0] + (num[1] || ''), 10);
-            minute = 0;
-            second = 0;
-            break;
-        default:
-            throw SyntaxError("Cannot have more than 6 digits in an hour");
-	}
-	
-	// Make sure hour is in 24 hour format
-	if( pm === true && hour > 0 && hour < 12 ) hour += 12;
-	
-	// Force pm for hours between 13:00 and 23:00
-	if( hour >= 13 && hour <= 23 ) pm = true;
-	
-	// Handle step
-	if( step ) {
-		// Step to the nearest hour requires 60, not 0
-		if( step === 0 ) step = 60;
-		// Round to nearest step
-		stepMinute = (Math.round(minute / step) * step) % 60;
-		// Do we need to round the hour up?
-		if( stepMinute === 0 && minute >= 30 ) {
-			hour++;
-			// Do we need to switch am/pm?
-			if( hour === 12 || hour === 24 ) pm = !pm;
-		}
-		minute = stepMinute;
-	}
-	
-	// Keep within range
-	if (hour <= 0  || hour >= 24 ) throw SyntaxError("Hour must be within 0 and 24");
-	if (minute < 0 || minute > 59) throw SyntaxError("Minute must be between 0 and 59");
-    if (second < 0 || second > 59) throw SyntaxError("Second must be between 0 and 59");
 
-    return DateTime.fromObject({
-        hour: hour,
-        minute: minute,
-        second: second
-    });
-}
-
-function parseDate(date: string): DateTime{
-    return DateTime.fromISO(date);
-}
-
-function combineDateAndTime(date: DateTime, time: DateTime): DateTime{
-    return DateTime.local(
-        date.year, 
-        date.month,
-        date.day, 
-        time.hour, 
-        time.minute, 
-        time.second, 
-        { zone: date.zone }
-    );
-}
 
 function generateInvalidTzPage(tz: string): string {
 
@@ -158,28 +74,38 @@ async function execute(interaction: discord.ChatInputCommandInteraction){
     if (dateRaw == null)
         date = DateTime.local({zone: source_tz});
     else {
-        let newDate = parseDate(dateRaw);
-        date = DateTime.fromObject({
-            year: newDate.year,
-            month: newDate.month,
-            day: newDate.day
-        }, {
-            zone: source_tz
-        })
+        try {
+            let newDate = Inputs.parseDate(dateRaw);
+            date = DateTime.fromObject({
+                year: newDate.year,
+                month: newDate.month,
+                day: newDate.day
+            }, {
+                zone: source_tz
+            })
+        } catch {
+            interaction.reply("An error occured while attempting to parse input date.\nAre you sure your format is correct?");
+            return;
+        }
     }
 
     let timeRaw = interaction.options.getString("time");
     if (timeRaw == null)
         time = DateTime.local({zone: source_tz});
     else {
-        let newTime = parseDate(timeRaw);
-        time = DateTime.fromObject({
-            hour: newTime.hour,
-            minute: newTime.minute,
-            second: newTime.second,
-        }, {
-            zone: source_tz
-        })
+        try {
+            let newTime = Inputs.parseDate(timeRaw);
+            time = DateTime.fromObject({
+                hour: newTime.hour,
+                minute: newTime.minute,
+                second: newTime.second,
+            }, {
+                zone: source_tz
+            })
+        } catch {
+            interaction.reply("An error occured while attempting to parse input time.\nAre you sure your format is correct?")
+            return;
+        }
     }
 
     calendar = interaction.options.getString("calendar");
@@ -196,7 +122,7 @@ async function execute(interaction: discord.ChatInputCommandInteraction){
     // By here we should DEFINITELY have a calendar set!
     // ...right?
 
-    let datetime = combineDateAndTime(date, time).reconfigure({outputCalendar: calendar});
+    let datetime = Inputs.combineDateAndTime(date, time).reconfigure({outputCalendar: calendar});
 
     let converted = datetime.setZone(target_tz);
     let offsetM = converted.offset - datetime.offset;
