@@ -7,6 +7,7 @@ module DBAPI {
         discord_id: number;
         timezone: string;
         calendar?: string;
+        sleep_time?: string;
     }
 
     /**
@@ -14,7 +15,8 @@ module DBAPI {
      */
     export type UserOptions = {
         timezone?: string,
-        calendar?: string
+        calendar?: string,
+        sleep_time?: string
     }
 
     function handleError(err: Error | unknown){
