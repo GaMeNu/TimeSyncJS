@@ -9,6 +9,7 @@ import FuzzyTz from "../../../util/fuzzy_tz";
 import GM from "../../../util/globals";
 import Inputs from "../../../util/inputs";
 import { DateTime } from "luxon";
+import SleeptimesManager from "../../../util/user_sleeptime";
 
 
 
@@ -32,8 +33,9 @@ async function execute(interaction: discord.ChatInputCommandInteraction) {
     let sleeptime: DateTime;
     try {
         sleeptime = Inputs.parseTime(sleeptimeRaw);
-    } catch {
-        interaction.reply("An error has occured while attemptimg to parse input time.\nAre you sure your format is correct?");
+    } catch (error) {
+        const err = error as Error;
+        interaction.reply(`An error has occured while attemptimg to parse input time.\nAre you sure your format is correct?\n(\`${err.message}\`)`);
         return;
     }
 
@@ -52,6 +54,8 @@ async function execute(interaction: discord.ChatInputCommandInteraction) {
         console.error(error);
         return;
     }
+
+    SleeptimesManager.removeUser(userIDInt);
 
     if (user !== null ) await interaction.reply(`Successfully set \`@${user.username}\`'s sleep time to \`${sleeptimeFmt}\`!`);
     else await interaction.reply(`Successfully set your sleep time to \`${sleeptimeFmt}\`!`);

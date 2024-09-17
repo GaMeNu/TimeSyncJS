@@ -46,7 +46,7 @@ module Inputs {
         if( hour >= 13 && hour <= 23 ) pm = true;
         
         // Keep within range
-        if (hour <= 0  || hour >= 24 ) throw SyntaxError("Hour must be within 0 and 24");
+        if (hour < 0  || hour > 23 ) throw SyntaxError("Hour must be within 0 and 23");
         if (minute < 0 || minute > 59) throw SyntaxError("Minute must be between 0 and 59");
         if (second < 0 || second > 59) throw SyntaxError("Second must be between 0 and 59");
 

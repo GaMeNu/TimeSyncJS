@@ -1,6 +1,7 @@
 import discord from "discord.js";
 import { deploy_cmds, set_client_commands } from "./deploy_cmds";
 import GM from "./util/globals";
+import SleepSync from "./sleepsync";
 
 const client = new discord.Client({intents: [discord.GatewayIntentBits.Guilds, discord.GatewayIntentBits.GuildMessages, discord.GatewayIntentBits.MessageContent, discord.GatewayIntentBits.GuildIntegrations]});
 
@@ -80,5 +81,8 @@ client.on(discord.Events.MessageCreate, async (message) => {
         } 
     }
 })
+
+SleepSync.main(client);
+
 client.login(TOKEN);
 

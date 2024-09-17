@@ -7,6 +7,7 @@ import { IANATimeZones } from "../../../util/timezones";
 
 import FuzzyTz from "../../../util/fuzzy_tz";
 import GM from "../../../util/globals";
+import SleeptimesManager from "../../../util/user_sleeptime";
 
 
 
@@ -57,6 +58,7 @@ async function execute(interaction: discord.ChatInputCommandInteraction) {
     let userIDInt = Number.parseInt(userID, 10);
 
     let res = await DBAPI.safeSetUserTimezone(userIDInt, tz);
+    SleeptimesManager.removeUser(userIDInt);
     try {
         if (user !== null ) await interaction.reply(`Successfully set \`@${user.username}\`'s timezone to \`${tz}\`!`);
         else await interaction.reply(`Successfully set your timezone to \`${tz}\`!`);
