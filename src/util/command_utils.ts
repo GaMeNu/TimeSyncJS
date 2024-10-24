@@ -2,11 +2,27 @@ import discord, { SlashCommandBuilder, SlashCommandSubcommandBuilder } from "dis
 import fs from "node:fs";
 import path from "node:path";
 
-module CmdUtils {
+namespace CmdUtils {
+    /**
+     * This represents an async function that handles the command interaction.
+     * 
+     * The function takes in a `discord.ChatInputCommandInteraction` and returns `Promise<void>`
+     */
     type SubcommandHandler = ((interaction: discord.ChatInputCommandInteraction) => Promise<void>);
+
+    /**
+     * This represents a dictionary of string keys and corresponding handlers
+     */
     type SubcommandDictionary = { [key: string]: SubcommandHandler };
 
+    /**
+     * 
+     * @param dirPath 
+     * @param cmd 
+     * @returns 
+     */
     export function generateSubcommands(dirPath: string, cmd: SlashCommandBuilder): SubcommandDictionary {
+        // Create a new subcommand dictionary, with all subcommands and their names.
         const subcFuncs: SubcommandDictionary = {
             "_": async (interaction: discord.ChatInputCommandInteraction) => {
                 await interaction.reply("Unrecognized subcommand (how did we get here?)")

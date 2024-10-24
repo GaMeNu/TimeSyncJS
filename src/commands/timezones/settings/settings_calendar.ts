@@ -1,9 +1,8 @@
-import discord from "discord.js";
+import discord from "discord.js"
 import { SlashCommandSubcommandBuilder } from "discord.js";
 import Fuse from "fuse.js";
 
 import DBAPI from "../../../db/db_api";
-import { IANATimeZones } from "../../../util/timezones";
 import GM from "../../../util/globals";
 
 
