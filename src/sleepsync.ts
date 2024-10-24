@@ -35,7 +35,7 @@ namespace SleepSync {
 
             let res = (sleeptime < currentTime && currentTime < wakeupTime);
             if (res){
-                let msg = await message.reply(`### Why are you not asleep!?\nAccording to my calculations, you should've been asleep at \`${sleeptime.toFormat("HH:mm:ss")}\`! It is already \`${currentTime.toFormat("HH:mm:ss")}}\`!`)
+                let msg = await message.reply(`### Why are you not asleep!?\nAccording to my calculations, you should've been asleep at \`${sleeptime.toFormat("HH:mm:ss")}\`! It is already \`${currentTime.toFormat("HH:mm:ss")}\`!`)
                 setTimeout(() => msg.delete(), MESSAGE_DELETION_TIME)
             }
         });
