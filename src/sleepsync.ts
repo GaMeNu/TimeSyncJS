@@ -3,6 +3,8 @@ import SleeptimesManager from "./util/user_sleeptime";
 import { DateTime } from "luxon";
 
 namespace SleepSync {
+    const MESSAGE_DELETION_TIME = 5000;
+
     export function main(client: discord.Client){
         client.on(discord.Events.MessageCreate, async (message) => {
             const userId = parseInt(message.author.id, 10);
@@ -34,7 +36,7 @@ namespace SleepSync {
             let res = (sleeptime < currentTime && currentTime < wakeupTime);
             if (res){
                 let msg = await message.reply(`### Why are you not asleep!?\nAccording to my calculations, you should've been asleep at \`${sleeptime.toFormat("HH:mm:ss")}\`!`)
-                setTimeout(() => msg.delete(), 5000)
+                setTimeout(() => msg.delete(), MESSAGE_DELETION_TIME)
             }
         });
     }
