@@ -2,7 +2,7 @@ import discord from "discord.js";
 import SleeptimesManager from "./util/user_sleeptime";
 import { DateTime } from "luxon";
 
-module SleepSync {
+namespace SleepSync {
     export function main(client: discord.Client){
         client.on(discord.Events.MessageCreate, async (message) => {
             const userId = parseInt(message.author.id, 10);

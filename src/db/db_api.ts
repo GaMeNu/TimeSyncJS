@@ -1,7 +1,7 @@
 import * as dblib from "mysql2/promise";
 import * as pm from "./pool_manager";
 
-module DBAPI {
+namespace DBAPI {
 
     export interface User extends dblib.RowDataPacket {
         discord_id: number;
