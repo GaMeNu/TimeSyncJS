@@ -1,15 +1,13 @@
 import discord from "discord.js";
 import { SlashCommandSubcommandBuilder } from "discord.js";
-import Fuse from "fuse.js";
 
 import DBAPI from "../../../db/db_api";
-import { IANATimeZones } from "../../../util/timezones";
 import GM from "../../../util/globals";
 
 
 async function execute(interaction: discord.ChatInputCommandInteraction) {
     let calendar = interaction.options.getString("calendar")
-    if (calendar == undefined || calendar == null){
+    if (calendar == undefined){
         await interaction.reply("You must include a calendar.");
         return;
     }
@@ -17,7 +15,7 @@ async function execute(interaction: discord.ChatInputCommandInteraction) {
     let user = interaction.options.getUser("user");
 
     if (user !== null && interaction.user.id !== GM.INSTANCE.AUTHOR_ID){
-        await interaction.reply("You do not have permission to change others' timezone.");
+        await interaction.reply("You do not have permission to change others' settings.");
         return;
     }
 

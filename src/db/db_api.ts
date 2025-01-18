@@ -12,9 +12,9 @@ module DBAPI {
     /**
      * This will probably be used to add a setUserData action that all DBAPI funcs will eventually pipe down to
      */
-    export type UserOptions = {
-        timezone?: string,
-        calendar?: string
+    export interface UserOptions {
+        timezone?: string | null,
+        calendar?: string | null
     }
 
     function handleError(err: Error | unknown){
@@ -60,7 +60,9 @@ module DBAPI {
     export async function reconfigureUser(discord_id: number, options: UserOptions){
         let sqlKeys= Object.keys(options).map(val => `${val}=?`).join(",");
         let sqlStatement = `UPDATE timezones SET ${sqlKeys} WHERE discord_id=?`
-        let sqlValues = Object.values(options).map(val => val.toString());
+        let sqlValues = Object.values(options).map(val => {
+            return val == null ? val : val.toString()
+        });
         sqlValues.push(discord_id.toString());
         await queryDatabase(sqlStatement, sqlValues);
     }
@@ -83,6 +85,14 @@ module DBAPI {
             await reconfigureUser(discord_id, {calendar: calendar});
         } catch (error) {
             handleError(error);
+        }
+    }
+
+    export async function deleteUserCalendar(discord_id: number) {
+        try {
+            await reconfigureUser(discord_id, {calendar: null});
+        } catch (error) {
+            handleError(error)
         }
     }
 

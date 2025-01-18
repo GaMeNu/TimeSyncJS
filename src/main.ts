@@ -62,12 +62,14 @@ client.on(discord.Events.InteractionCreate, async (interaction: discord.Interact
 
 client.on(discord.Events.MessageCreate, async (message) => {
     if (message.content.startsWith("/sync_cmds")){
-        if (message.author.id !== AUTHOR_ID) {
-            await message.reply("No permission.");
+        let username = client.user?.username;
+
+        if (username !== undefined && !message.content.includes(username)){
             return;
         }
-        let username = client.user?.username;
-        if (username !== undefined && !message.content.includes(username)){
+
+        if (message.author.id !== AUTHOR_ID) {
+            await message.reply("No permission.");
             return;
         }
 
